@@ -1,0 +1,365 @@
+package codigo;
+
+import java_cup.runtime.Symbol;
+
+parser code
+{:
+    private Symbol s;
+    
+    public void syntax_error(Symbol s){
+        archivo.reportarError("recuperable" ,s.left+1,s.right+1,s.value);
+        /*this.s = s;*/
+    }
+
+    public void unrecovered_syntax_error(Symbol s) throws java.lang.Exception{ 
+         archivo.reportarError("no recuperable" ,s.left+1,s.right+1,s.value);
+    }
+
+    public Symbol getS(){
+        return this.s;
+:};
+
+terminal delimitador,
+        ini_bloque,
+        fin_bloque,
+        simb_igual,
+        simb_inicial,
+        retorno,
+        simb_input,
+        simb_output,
+        valor_nulo,
+        ini_arreglo,
+        fin_arreglo,
+        ini_parentesis,
+        fin_parentesis,
+        simb_coma,
+        verdadero,
+        falso,
+        simb_if,
+        simb_else,
+        simb_while,
+        simb_switch,
+        simb_case,
+        simb_break,
+        simb_default,
+        simb_dos_puntos,
+        simb_positivo,
+        simb_negativo,
+        simb_division,
+        simb_multiplicacion,
+        simb_potencia,
+        simb_modulo,
+        simb_aumento,
+        simb_decremento,
+        simb_menor_que,
+        simb_mayor_que,
+        simb_igual_que,
+        simb_diferente,
+        simb_menor_igual,
+        simb_mayor_igual,
+        simb_conjuncion,
+        simb_disyuncion,
+        simb_negacion,
+        tipo_int,
+        tipo_float,
+        tipo_bool,
+        tipo_char,
+        tipo_string,
+        tipo_array,
+        Identificador,
+        String,
+        Caracter,
+        Int,
+        Float,
+        Error;
+
+non terminal FUNCION_MAIN,
+            MAIN,
+            LEER,
+            ESCRIBIR,
+            FUNCION,
+            PARAMETROS_FUNCION,
+            PARAMETROS_FUNCION_AUX,
+            DECLARACION_FUNCION,
+            DECLARACION_FUNCION_AUX,
+            TIPO_PARAMETRO_FUNCION,
+            SWITCH,
+            PARAM_SWITCH,
+            CASE_DAFAULT,
+            PARAM_CASE,
+            WHILE,
+            IF_ELSE,
+            BLOQUE,
+            SENTENCIA,
+            EXPRESION_AUX,
+            EXPRESION_LOGICA_UNARIA,
+            EXPRESION_LOGICA_UNARIA_AUX,
+            OPERADORES_LOGICOS,
+            EXPRESION_LOGICA_BINARIA,
+            EXPRESION_LOGICA,
+            PARAMETRO_EXP_RELACIONAL,
+            OPERADORES_RELACIONALES,
+            EXPRESION_RELACIONAL_AUX,
+            EXPRESION_RELACIONAL,
+            PARAMETRO_EXP_ARITMETICA,
+            OPERADORES_ARITMETICOS,
+            EXPRESION_ARITMETICA_UNA,
+            EXPRESION_ARITMETICA_BIN,
+            EXPRESION_ARITMETICA,
+            ASIGNACION_VARIABLE,
+            DECLARACION_VARIABLE,
+            EXPRESION_ARITMETICA_BIN_AUX,
+            EXPRESION_ARITMETICA_UNA_AUX,
+            EXPRESIONES,
+            TIPOS_VAR,
+            TIPO_ARREGLO,
+            TIPOS_ASIG_VAR,
+            ARREGLO,
+            PARAMETROS_ARREGLO;
+
+start with MAIN;
+
+MAIN::=
+    FUNCION_MAIN DECLARACION_FUNCION;
+
+FUNCION_MAIN::=
+    tipo_int simb_inicial ini_parentesis TIPO_PARAMETRO_FUNCION fin_parentesis ini_bloque BLOQUE retorno Int delimitador fin_bloque | 
+    tipo_int simb_inicial ini_parentesis TIPO_PARAMETRO_FUNCION fin_parentesis ini_bloque BLOQUE retorno EXPRESION_LOGICA delimitador fin_bloque | 
+    tipo_int simb_inicial ini_parentesis TIPO_PARAMETRO_FUNCION fin_parentesis ini_bloque BLOQUE retorno EXPRESION_ARITMETICA delimitador fin_bloque | 
+    tipo_int simb_inicial ini_parentesis TIPO_PARAMETRO_FUNCION fin_parentesis ini_bloque BLOQUE retorno FUNCION delimitador fin_bloque | 
+    tipo_int simb_inicial ini_parentesis TIPO_PARAMETRO_FUNCION fin_parentesis ini_bloque BLOQUE retorno Identificador delimitador fin_bloque;
+
+LEER::=
+    simb_input ini_parentesis Identificador fin_parentesis;
+
+ESCRIBIR::= 
+    simb_output ini_parentesis TIPOS_ASIG_VAR  fin_parentesis | 
+    simb_output ini_parentesis EXPRESION_LOGICA fin_parentesis | 
+    simb_output ini_parentesis EXPRESION_ARITMETICA fin_parentesis| 
+    simb_output ini_parentesis FUNCION fin_parentesis |
+    simb_output ini_parentesis Identificador fin_parentesis;
+
+FUNCION::= 
+    Identificador ini_parentesis PARAMETROS_FUNCION fin_parentesis |
+    Identificador ini_parentesis fin_parentesis;
+
+PARAMETROS_FUNCION::=
+    PARAMETROS_FUNCION_AUX |
+    PARAMETROS_FUNCION_AUX simb_coma PARAMETROS_FUNCION;
+
+PARAMETROS_FUNCION_AUX::=
+    TIPOS_ASIG_VAR | 
+    EXPRESION_LOGICA | 
+    EXPRESION_ARITMETICA | 
+    FUNCION | 
+    Identificador ;
+
+DECLARACION_FUNCION::=
+    TIPOS_VAR Identificador ini_parentesis TIPO_PARAMETRO_FUNCION fin_parentesis ini_bloque BLOQUE retorno DECLARACION_FUNCION_AUX fin_bloque |
+    TIPOS_VAR Identificador ini_parentesis TIPO_PARAMETRO_FUNCION fin_parentesis ini_bloque BLOQUE fin_bloque |
+    TIPOS_VAR Identificador ini_parentesis fin_parentesis ini_bloque BLOQUE retorno DECLARACION_FUNCION_AUX fin_bloque |
+    TIPOS_VAR Identificador ini_parentesis fin_parentesis ini_bloque BLOQUE fin_bloque;
+    
+DECLARACION_FUNCION_AUX::=
+    TIPOS_ASIG_VAR delimitador| 
+    EXPRESION_LOGICA delimitador |
+    EXPRESION_ARITMETICA delimitador | 
+    FUNCION delimitador | 
+    Identificador delimitador;
+
+TIPO_PARAMETRO_FUNCION::=
+    TIPOS_VAR Identificador |
+    TIPOS_VAR Identificador simb_coma TIPO_PARAMETRO_FUNCION;
+
+PARAM_SWITCH::= 
+    Identificador | 
+    Int | 
+    Float | 
+    String | 
+    Caracter | 
+    FUNCION;
+
+CASE_DAFAULT::=
+    simb_default simb_dos_puntos break delimitador |
+    simb_default simb_dos_puntos BLOQUE break delimitador |
+    simb_default simb_dos_puntos BLOQUE retorno PARAM_SWITCH delimitador |
+    simb_default simb_dos_puntos retorno PARAM_SWITCH delimitador
+    simb_default simb_dos_puntos BLOQUE break delimitador CASE_SWITCH
+    simb_default simb_dos_puntos break delimitador CASE_SWITCH |
+    simb_default simb_dos_puntos BLOQUE retorno PARAM_SWITCH delimitador CASE_SWITCH |
+    simb_default simb_dos_puntos retorno PARAM_SWITCH delimitador CASE_SWITCH;
+CASE_SWITCH::=
+    simb_case PARAM_SWITCH simb_dos_puntos BLOQUE simb_break delimitador |
+    simb_case PARAM_SWITCH simb_dos_puntos simb_break delimitador |
+    simb_case PARAM_SWITCH simb_dos_puntos BLOQUE retorno PARAM_SWITCH delimitador |
+    simb_case PARAM_SWITCH simb_dos_puntos retorno PARAM_SWITCH delimitador |
+    simb_case PARAM_SWITCH simb_dos_puntos BLOQUE simb_break delimitador CASE_SWITCH |
+    simb_case PARAM_SWITCH simb_dos_puntos simb_break delimitador CASE_SWITCH |
+    simb_case PARAM_SWITCH simb_dos_puntos BLOQUE retorno PARAM_SWITCH delimitador CASE_SWITCH |
+    simb_case PARAM_SWITCH simb_dos_puntos retorno PARAM_SWITCH delimitador CASE_SWITCH |
+
+SWITCH:
+    simb_switch ini_parentesis Identificador fin_parentesis ini_bloque CASE_SWITCH fin_bloque |
+    simb_switch ini_parentesis Identificador fin_parentesis ini_bloque CASE_SWITCH CASE_DAFAULT fin_bloque |;
+
+WHILE::=
+    simb_while ini_parentesis EXPRESION_LOGICA fin_parentesis ini_bloque BLOQUE fin_bloque;
+
+IF_ELSE::=
+    simb_if ini_parentesis EXPRESION_LOGICA fin_parentesis ini_bloque BLOQUE fin_bloque |
+    simb_if ini_parentesis EXPRESION_LOGICA fin_parentesis ini_bloque BLOQUE fin_bloque simb_else ini_bloque BLOQUE fin_bloque;
+
+BLOQUE::=
+    SENTENCIA |
+    SENTENCIA BLOQUE;
+
+SENTENCIA::=
+    DECLARACION_VARIABLE delimitador |
+    ASIGNACION_VARIABLE delimitador |
+    FUNCION |
+    IF_ELSE |
+    WHILE |
+    SWITCH delimitador |
+    LEER delimitador |
+    ESCRIBIR delimitador |
+    Error delimitador;
+
+
+EXPRESION_LOGICA ::=
+    EXPRESION_LOGICA_UNARIA |
+    EXPRESION_LOGICA_BINARIA;
+
+EXPRESION_AUX::=
+    OPERADORES_LOGICOS EXPRESION_LOGICA;
+
+EXPRESION_LOGICA_BINARIA::=
+    EXPRESION_LOGICA_UNARIA OPERADORES_LOGICOS EXPRESION_LOGICA_UNARIA |
+    EXPRESION_LOGICA_UNARIA OPERADORES_LOGICOS EXPRESION_LOGICA_BINARIA |
+    ini_parentesis EXPRESION_LOGICA_BINARIA fin_parentesis EXPRESION_AUX |
+    ini_parentesis EXPRESION_LOGICA_BINARIA fin_parentesis;
+
+OPERADORES_LOGICOS::=
+    simb_conjuncion |
+    simb_disyuncion;
+
+EXPRESION_LOGICA_UNARIA_AUX::=
+    Identificador | 
+    FUNCION | 
+    EXPRESION_RELACIONAL | 
+    verdadero |
+    falso;
+
+EXPRESION_LOGICA_UNARIA::=
+    simb_negacion EXPRESION_LOGICA_UNARIA_AUX |
+    EXPRESION_LOGICA_UNARIA_AUX;
+
+EXPRESION_RELACIONAL_AUX::=
+    EXPRESION_LOGICA_UNARIA | 
+    EXPRESION_LOGICA_BINARIA;
+
+EXPRESION_RELACIONAL::=
+    PARAMETRO_EXP_RELACIONAL OPERADORES_RELACIONALES PARAMETRO_EXP_RELACIONAL |
+    PARAMETRO_EXP_RELACIONAL OPERADORES_RELACIONALES EXPRESION_RELACIONAL |
+    ini_parentesis EXPRESION_RELACIONAL fin_parentesis OPERADORES_LOGICOS EXPRESION_RELACIONAL_AUX |
+    ini_parentesis EXPRESION_RELACIONAL fin_parentesis;
+
+OPERADORES_RELACIONALES::=
+    simb_menor_que |
+    simb_mayor_que |
+    simb_igual_que |
+    simb_diferente |
+    simb_menor_igual |
+    simb_mayor_igual;
+
+PARAMETRO_EXP_RELACIONAL::=
+    Identificador |
+    FUNCION |
+    Int |
+    Float |
+    EXPRESION_ARITMETICA;
+
+EXPRESION_ARITMETICA::=
+    EXPRESION_ARITMETICA_UNA |
+    EXPRESION_LOGICA_BINARIA;
+
+EXPRESION_ARITMETICA_BIN_AUX::=
+    PARAMETRO_EXP_ARITMETICA |
+    EXPRESION_ARITMETICA_BIN;
+
+EXPRESION_ARITMETICA_BIN::=
+    PARAMETRO_EXP_ARITMETICA OPERADORES_ARITMETICOS PARAMETRO_EXP_ARITMETICA |
+    PARAMETRO_EXP_ARITMETICA OPERADORES_ARITMETICOS EXPRESION_ARITMETICA_BIN |
+    ini_parentesis EXPRESION_ARITMETICA_BIN fin_parentesis OPERADORES_ARITMETICOS EXPRESION_ARITMETICA_BIN_AUX |
+    ini_parentesis EXPRESION_ARITMETICA_BIN fin_parentesis;
+
+EXPRESION_ARITMETICA_UNA_AUX::=
+    simb_aumento |
+    simb_decremento;
+
+EXPRESION_ARITMETICA_UNA::=
+    EXPRESION_ARITMETICA_UNA_AUX Identificador;
+
+OPERADORES_ARITMETICOS::=
+    simb_negativo | 
+    simb_positivo | 
+    simb_multiplicacion | 
+    simb_division | 
+    simb_potencia | 
+    simb_modulo;
+
+PARAMETRO_EXP_ARITMETICA::=
+    Identificador | 
+    FUNCION | 
+    Int |
+    Float;
+
+ASIGNACION_VARIABLE::=
+    Identificador simb_igual TIPOS_ASIG_VAR |
+    Identificador simb_igual EXPRESIONES |
+    Identificador TIPO_ARREGLO simb_igual EXPRESIONES |
+    Identificador TIPO_ARREGLO simb_igual Int |
+    Identificador TIPO_ARREGLO simb_igual Caracter;
+
+DECLARACION_VARIABLE::=
+    TIPOS_VAR Identificador |
+    TIPOS_VAR Identificador simb_igual TIPOS_ASIG_VAR |
+    TIPOS_VAR Identificador simb_igual EXPRESIONES |
+    tipo_int Identificador TIPO_ARREGLO simb_igual valor_nulo |
+    tipo_int Identificador TIPO_ARREGLO simb_igual ARREGLO;
+
+PARAMETROS_ARREGLO::=
+    Int |
+    Caracter |
+    FUNCION |
+    EXPRESION_ARITMETICA |
+    Identificador |
+    PARAMETROS_ARREGLO simb_coma PARAMETROS_ARREGLO;
+
+ARREGLO::= 
+    ini_arreglo Int fin_arreglo;
+
+EXPRESIONES::=
+    EXPRESION_ARITMETICA |
+    EXPRESION_LOGICA |
+    FUNCION |
+    EXPRESION_RELACIONAL;
+
+TIPOS_ASIG_VAR::=
+    Int |
+    Float |
+    String |
+    Caracter |
+    verdadero |
+    falso |
+    valor_nulo;
+
+TIPO_ARREGLO::=
+    ini_arreglo Int fin_arreglo;
+
+TIPOS_VAR::=
+    tipo_int |
+    tipo_float |
+    tipo_char |
+    tipo_string |
+    tipo_bool;
+    
